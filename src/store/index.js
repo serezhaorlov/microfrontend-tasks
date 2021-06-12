@@ -46,17 +46,35 @@ export function createStore() {
           secondName: 'Elisabeth',
           id: 2
         },
+        {
+          name: 'Michael',
+          lastName: 'Campbell',
+          secondName: 'Devi',
+          id: 3
+        },
       ]
     },
     { 
       id: 2,
       name: 'Christmas',
-      participicators: []
+      participicators: [
+        {
+          name: 'Michael',
+          lastName: 'Campbell',
+          secondName: 'Devi',
+          id: 3
+        },]
     },
     { 
       id: 3,
       name: 'Independence day',
-      participicators: []
+      participicators: [
+        {
+          name: 'Michael',
+          lastName: 'Campbell',
+          secondName: 'Devi',
+          id: 3
+        },]
     },
     { 
       id: 4,
@@ -65,18 +83,13 @@ export function createStore() {
     } 
   ]
 
+
   return {
     get persons() {
       return persons
     },
     get eventsList() {
       return eventsList
-    },
-
-    deleteUser(id) {
-      const newUsers =  persons.filter(person => person.id !== id);
-      persons = newUsers;
-      return persons;
     },
 
     addUser({name, lastName, secondName}) {
@@ -87,6 +100,7 @@ export function createStore() {
         secondName,
       }
       persons = [...persons, newUser];
+      subscribers.forEach(fn => fn());
     },
 
     editUser (id, {name, secondName, lastName}) {
@@ -98,8 +112,16 @@ export function createStore() {
         } else {
           return person;
         }
+        subscribers.forEach(fn => fn());
       });
 
+    },
+
+    deleteUser(id) {
+      const newUsers = persons.filter(person => person.id !== id);
+      persons = newUsers;
+      subscribers.forEach(fn => fn());
+      return persons;
     },
 
     addEvent(name) {
@@ -109,6 +131,26 @@ export function createStore() {
         participicators: []
       }
       eventsList = [...eventsList, event];
+      subscribers.forEach(fn => fn());
+      
+    },
+
+    editEventName(id, name){
+      eventsList.map(event => {
+        if (event.id === id) {
+          event.name = name;
+        } else {
+          return event;
+        }
+        subscribers.forEach(fn => fn());
+      });
+    },
+
+    deleteEvent(id) {
+      const newEvents = eventsList.filter(event => event.id !== id);
+      eventsList = newEvents;
+      subscribers.forEach(fn => fn());
+      return eventsList;
     },
 
     addToParty(persons, eventID){
@@ -118,9 +160,26 @@ export function createStore() {
         } else {
           return event;
         }
+        subscribers.forEach(fn => fn());
       });
     },
 
+    deleteParticipant(eventId, personId) {
+      const currentEvent = eventsList.filter((event) => {
+        return event.id === eventId
+      })
+      const currentPersons = currentEvent.map(event => event.participicators.filter(person => person.id !== personId)).flat()
+      const newEvent = {
+        id: currentEvent[0].id,
+        name: currentEvent[0].name,
+        participicators: currentPersons
+      }
+      const newList = eventsList.map(event => event.id === newEvent.id ? newEvent : event);
+      eventsList = newList
+      subscribers.forEach(fn => fn());
+      return
+    },
+    
     subscribe(fn) {
       subscribers.push(fn)
     },

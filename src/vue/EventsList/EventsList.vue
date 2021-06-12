@@ -4,10 +4,13 @@
             <tbody>
                 <tr class="persons-list__row">
                     <td class="persons-list__cell">ID</td>
-                    <td class="persons-list__cell"> Name</td>
-                    <td class="persons-list__cell"> Participate</td>
+                    <td class="persons-list__cell">Name</td>
+                    <td class="persons-list__cell">Participate</td>
+                    <td class="persons-list__cell">Edit</td>
+                    <td class="persons-list__cell">Delete</td>
                 </tr>
-                <Event v-for="event, index of eventsList" :event="event" :toggleParticipicationModal="toggleParticipicationModal" :index="index" :key="index"/>
+                <Event v-for="event, index of eventsList" @delete-event="deleteEvent" @toggle-edit-event-modal="toggleEditEventModal"
+                 @toggle-participication-modal="toggleParticipicationModal" :event="event" :index="index" :key="index"/>
             </tbody>
     </table>
     <button class="react__add-btn" @click="toggleAddEventModal">Add New Event</button>
@@ -23,6 +26,11 @@
         </div>
         <button type="submit" class="modal-events__button">Add to Party</button>
         <button type="button" class="modal-events__button" @click="toggleParticipicationModal">Close Modal</button>
+    </form>
+    <form name="event" v-if="isEventEditModalOpen" class="modal-events" @submit.prevent="editEventName(eventID, eventNameEdited)" >
+        <input type="text" class="modal-events__input" v-model="eventNameEdited"/>
+        <button type="submit" class="modal-events__button">Edit Event</button>
+        <button type="button" class="modal-events__button" @click="toggleEditEventModal">Close Modal</button>
     </form>
 </div>
     
@@ -40,16 +48,22 @@ export default {
         return {
             isEventModalOpen: false,
             isParticipicationModalOpen: false,
+            isEventEditModalOpen: false,
             eventsList: window.store.eventsList,
             eventName: '',
+            eventNameEdited: '',
             personIDs: [],
             personsForParty: [],
             eventID: null,
+            persons: window.store.persons
         }
     },
     mounted(){
         window.store.subscribe(() => {
             this.eventsList = window.store.eventsList
+        })
+        window.store.subscribe(() => {
+            this.persons = window.store.persons
         })
     },
     methods: {
@@ -59,6 +73,10 @@ export default {
         toggleParticipicationModal(id){
             this.isParticipicationModalOpen = !this.isParticipicationModalOpen;
             this.eventID = id;
+        },
+        toggleEditEventModal(id){
+            this.eventID = id
+            this.isEventEditModalOpen = !this.isEventEditModalOpen;
         },
         addEvent(name){
             window.store.addEvent(name);
@@ -73,13 +91,17 @@ export default {
             });
             window.store.addToParty(this.personsForParty, this.eventID)
             this.isParticipicationModalOpen = false;
+        },
+        editEventName(id, name) {
+            window.store.editEventName(id, name);
+            this.eventNameEdited = '';
+            this.isEventEditModalOpen = false;
+        },
+        deleteEvent(id){
+            this.eventsList = window.store.deleteEvent(id);
         }
     },
-    props: {
-        persons: {
-            type: Array
-        }
-    }
+    
 }
 </script>
 

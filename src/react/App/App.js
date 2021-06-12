@@ -51,7 +51,8 @@ const App = () => {
 
   return (
     <Router>
-      <Switch>
+      <Switch computedMatch>
+        <>
         <section className="react"> 
           <div className="react__buttons">
             <Link className="react__to-vue-btn" to='/'>React</Link>
@@ -71,6 +72,7 @@ const App = () => {
             }
           </Route>
         </section>
+        </>
       </Switch>      
     </Router>
   );
