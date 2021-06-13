@@ -10,9 +10,9 @@ function PersonsList ({ persons, handleDeleteUser, handleEditUser }) {
             <tbody>
                 <tr className="persons-list__row">
                     <td className="persons-list__cell">ID</td>
-                    <td className="persons-list__cell">Last Name</td>
                     <td className="persons-list__cell"> Name</td>
                     <td className="persons-list__cell">Second Name</td>
+                    <td className="persons-list__cell">Last Name</td>
                     <td className="persons-list__cell">Edit</td>
                     <td className="persons-list__cell">Delete</td>
                 </tr>
