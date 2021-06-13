@@ -8,8 +8,8 @@
 Стартовая страница и роутинг по приложению реализованны на React, все остальные страницы на Vue, стор пришлось делать через window.store, потому что нормально ни один стейт менеджер пока с технологией не работает)
 
 
-##Как запустить проект
+### Как запустить проект
 
-### git clone https://github.com/serezhaorlov/microfrontend-tasks.git
-### npm install
-### npm start
+#### git clone https://github.com/serezhaorlov/microfrontend-tasks.git
+#### npm install
+#### npm start
